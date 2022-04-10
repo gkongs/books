@@ -14,10 +14,10 @@ description: 단축 평가에 대해 알아봅시다.
 ### 단축 평가의 규칙
 |단축 평가의 표현식| 평가 결과 |
 |---|---|
-|true || anything|true|
-|false || anything|anything|
-|true && anything|anything|
-|false && anything|false|
+|true \|\| anything | true |
+|false \|\| anything | anything |
+|true && anything | anything |
+|false && anything |false |
 <br>
 
 # 단축 평가의 활용
