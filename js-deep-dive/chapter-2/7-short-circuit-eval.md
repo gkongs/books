@@ -24,8 +24,7 @@ description: 단축 평가에 대해 알아봅시다.
 단축 평가를 다음과 같은 상황에서 유용하게 사용할 수 있다.<br>
 ```
 var elem = null;
-var value = elem.value; // TypeError: Cannot read property 'value'
-of null
+var value = elem.value; // TypeError: Cannot read property 'value' of null
 ```
 위 예제에선 `elem`이라는 변수의 프로퍼티를 참조하려고 한다. 하지만 프로퍼티를 참조할 때 참조하려는 변수의 값이 `unll 또는 undefined`라면 `TypeError`가 발생한다. <br>
 이 때 단축평가를 사용하면 에러를 발생시키지 않는다. <br>
@@ -68,7 +67,7 @@ var value = elem?.value; // null
 # null 병합 연산자
 ES11에서 도입된 **null 병합 연산자** `??`는 변수의 기본 값을 설정하는데 유용하다. <br>
 그러므로 함수의 디폴트 매개변수의 값을 정하는데도 유용한데 기존에 사용하던 `||`식 보다 코드적으로 더 간결해지진 않지만 옵셔널 체이닝과 마찬가지로 `falsy` 값이라 할지라도 null 또는 undefined 값이 아니라면 우항을 반환하지 않는다. <br>
-기본 값은 `0 또는 ''`와 같이 `falsy` 값 중에서도 유효한 값이 있기 때문에 모든 `falsy` 값을 체크하는 `|| 단축 평가 식`은 예기치 않은 동작이 발생할 수도 있다. <br>
+기본 값은 `0 또는 ''`와 같이 `falsy` 값 중에서도 유효한 값이 있기 때문에 모든 `falsy` 값을 체크하는 `|| 단축 평가식`은 예기치 않은 동작이 발생할 수도 있다. <br>
 따라서 이러한 점을 고려하여 보완되어 나온 **null 병합 연산자**를 사용하는 것이 좋다. 
 
 
