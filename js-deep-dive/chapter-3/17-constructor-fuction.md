@@ -54,3 +54,54 @@ console.log(radius); // 15
 생성자 함수 내부의 모든 처리가 끝나면 암묵적으로 인스턴스가 바인딩된 this를 반환한다. <br>
 
 함수 내부에 this가 아닌 다른 객체를 return 하면 그 객체가 반환된다. 이는 자바스크립트의 기본 동작을 훼손하므로 생성자 함수 내부에서 return 문은 반드시 생략해야 한다. <br>
+
+### 내부 메서드 `[[Call]]`과 `[[Construct]]`
+함수 선언문 또는 함수 표현식으로 정의한 함수는 일반함수는 물론이고 생성자 함수로서도 호출 할 수 있다. <br>
+함수는 객체지만 일반 객체와는 다르다. 일반 객체는 호출할 수 없지만 함수는 호출할 수 있기 때문이다. 따라서 함수는 일반 객체가 가지고 있는 내부 슬롯과 내부 메서드는 물론이고 함수 객체만을 위한 `[[Environment]]`, `[[FormalParameters]]` 등의 내부 슬롯과 `[[Call]]`, `[[Construct]]`같은 내부 메서드를 추가로 가지고 있다. <br>
+일반 함수로 호출될 땐 `[[Call]]` 메서드가 호출되고 생성자 함수로서 호출될 땐 `[[Construct]]`가 호출된다. 내부 메서드 `[[Call]]`을 갖는 함수 객체를 `Callable`이라 하며 내부 메서드 `[[Construct]]`를 갖는 함수 객체를 `constructor`, `[[Construct]]`를 갖지 않는 함수 객체를 `non-constructor`라고 한다. <br>
+`non-constructor`는 객체를 생성자 함수로서 호출할 수 없는 함수를 의미한다. <br>
+호출할 수 없는 함수 객체는 함수가 아니므로 모든 함수 객체는 `Callable`이다. 즉, 모두 `[[Call]]` 메서드를 가지고 있다. 반면에 `[[Construct]]`는 있을수도, 없을수도 있다. <br>
+
+### constructor와 non-constructor의 구분
+자바스크립트 엔진은 함수 `constructor` 와 `non-constructor`를 어떻게 나눌까? <br>
+자바스크립트 엔진은 함수 정의를 평가하여 구분하는데 `constructor`는 **함수 선언문, 함수 표현식, 클래스(클래스도 함수다)**이고 `non-constructor`는 **메서드(ES6 메서드 축약표현), 화살표 함수**다. <br>
+여기서 조심할 점은 ESMAscript 사양에서의 메서드는 일반적인 메서드보다 범위가 좁다는 것이다.
+
+```
+function foo() {} // 함수 선언문
+const bar = fuction () {}; // 함수 표현식
+
+const baz = {
+    x: function () {} // 프로퍼티 x의 값으로 정의된 함수는 메서드가 아니라 일반 함수로 취급한다.
+}
+
+new foo(); // foo {}
+new bar(); // bar {}
+new baz.x(); // x {}
+
+const arrow = () => {};
+
+const obj = {
+    x() {} // 축약 표현만 메서드로 인정한다.
+};
+
+new arrow(); // TypeError: arrow is not a constructor
+new obj.x(); // TypeError: obj.x is not a constructor
+```
+
+### new 연산자
+일반 함수와 생성자 함수에 특별한 형식적 차이가 없지만 `new 연산자`와 함께 함수를 호출하면 `[[Call]]` 대신 `[[Construct]]`가 호출된다. <br>
+
+### new.target
+생성자 함수는 파스칼 표기법으로 일반 함수와는 다르게 보이도록 구분하지만 그래도 `new 연산자` 없이 사용할 수 있다. 때문에 이를 막기 위한 방법으로 나온 것이 `new.target`이다. <br>
+ES6부터 등장하였으며, IE에선 동작하지 않는다. 
+```
+function Circle(radius) {
+    // new 연산자와 호출되지 않으면 new.target이 undefined기 때문에 분기를 통해 새로 호출한다.
+    if (!new.target) {
+        return new Circle(radius);
+    }
+}
+```
+참고로 대부분 빌트인 생성자 함수는 `new 연산자`와 함께 호출되었는지를 확인한 후 반환한다. <br>
+하지만 `String, Number, Boolean`은 `new 연산자` 사용시 객체를 반환하지만, 없이 호출하면 문자열, 숫자, 불리언 값을 반환한다. 때문에 이를 이용해서 타입 변환을 하기도 한다. <br>
