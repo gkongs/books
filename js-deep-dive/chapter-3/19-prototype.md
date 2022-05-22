@@ -168,3 +168,35 @@ Object, String, Number, Function, Array, RegExp, Date, Promise 등과 같은 빌
 그리고 위에서 가려진 프로퍼티를 인스턴스에서 삭제하면 프로토타입의 프로퍼티가 다시 드러나게 된다. 이 때 인스턴스에서 다시 해당 프로퍼티를 삭제해도 프로토타입의 프로퍼티는 삭제되지 않는다. <br>
 
 이 말은 하위 객체를 통해 프로토타입에 접근하는 것(get)은 가능해도 수정하는(set)은 불가능 하다는 것이다. 그러므로 수정하기 위해선 프로토타입에 직접 접근해서 처리해야 한다. <br>
+
+# 프로토타입의 교체
+프로토타입은 다른 객체로 변경할 수 있으며 이는 객체 간의 상속관계가 동적으로 변경될 수 있음을 의미한다. <br>
+물론 변경이 꽤나 번거롭기 때문에 직접 교체하지 않는 것이 좋다. 만약 상속 관계를 인위적으로 설정하려면 다음에 나올 '직접 상속'으로 하는 것이 편리하고 안전하다. <br>
+그리고 ES6에서 도입된 클래스를 사용하면 간편하고 직관적으로 상속관께를 구현할 수 있다.
+
+### 생성자 함수에 의한 프로토타입의 교체
+
+```
+const Person = (function () {
+    function Person(name) {
+        this.name = name;
+    }
+}
+
+Person.prototype = {
+    sayHello() {
+        console.log('hello');
+    }
+}
+
+const me = new Person('Lee'); 
+
+console.log(me.constructor === Person); // false;
+console.log(me.constructor === Object); // true;
+)
+```
+
+### 인스턴스에 의한 프로토타입의 교체
+프로토타입은 생성자 함수의 prototype 프로퍼티뿐만 아니라 인스턴스의 `__proto__` 접근자 프로퍼티(또는 Object.getPrototypeof 메서드)를 통해 접근할 수 있다. 따라서 인스턴스의 `__proto__` 접근자 프로퍼티(또는 Object.setPrototypeof 메서드)를 통해 프로토타입을 교체할 수 있다. <br>
+
+생성자 함수의 prototype 프로퍼티는 생성될 인스턴스의 프로토타입을 교체하는 것이지만 인스턴스의 `__proto__`는 이미 생성된 프로토타입을 교체하는 형식이다. <br>
