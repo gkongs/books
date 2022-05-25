@@ -233,3 +233,41 @@ const obj = {
     __proto__: myProto;
 }
 ```
+
+# 정적 프로퍼티/메서드
+정적 프로퍼티/메서드는 생성자 함수로 인스턴스를 생성하지 않아도 참조/호출할 수 있는 프로퍼티/메서드를 말한다. <br>
+
+생성자 함수는 객체이므로 프로퍼티와 메서드를 가질 수 있다. 이렇게 **생성자 함수 객체가 소유한 프로퍼티/메서드를 정적 프로퍼티/메서드**라고 한다. 정적 프로퍼티/메서드는 생성자 함수가 생성한 인스턴스로 참조/호출할 수 없다. <br>
+
+반면 프로토타입 프로퍼티/메서드와는 다르게 프로토타입 체인으로 연결되어있는 객체에 속하기 때문에 인스턴스에 참조할 수 있다. <br>
+
+this를 참조하지 않는 프로토타입 메서드는 정적 메서드로 변경하여도 동일한 효과를 얻을 수 있다. 인스턴스가 호출한 인스턴스/프로토타입 메서드 내에서 this는 인스턴스를 가리킨다. <br>
+
+> MDN등 문서에서 정적과 프로토타입 메서드는 표기 방식이 다르다. 참고로 prototype을 #으로 표기 하는 경우도 있다. `Object.prototype.isPrototypeOf =Object#isPrototypeOf`
+
+# 프로퍼티 존재 확인
+
+### in 연산자
+`in` 연산자는 객체 내에 특정 프로퍼티가 존재하는지 여부를 확인한다. <br>
+```
+key in object
+```
+
+`in` 연산자 대신 ES6에서 도입된 `Reflect.has` 메서드를 사용할 수도 있다. 동작은 동일하다. <br>
+```
+const person = { name: 'Lee' };
+console.log(person.hasOwnProperty('name')); // true
+console.log(person.hasOwnProperty('toString')); // true
+```
+
+### Object.prototype.hasOwnProperty 메서드
+`Object.prototype.hasOwnProperty` 메서드를 사용해도 객체에 특정 프로퍼티가 존재하는지 확인할 수 있다. <br>
+
+```
+console.log(person.hasOwnProperty('name')); // true
+console.log(person.hasOwnProperty('age')); // false
+```
+단, `Object.prototype.hasOwnProperty` 메서드는 이름과 같이 자신 고유의 프로퍼티 키인 경우에만 true를 반환한다. <br>
+```
+console.log(person.hasOwnProperty('toString')); // false
+```
