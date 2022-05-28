@@ -271,3 +271,35 @@ console.log(person.hasOwnProperty('age')); // false
 ```
 console.log(person.hasOwnProperty('toString')); // false
 ```
+# 프로퍼티 열거
+
+### for ... in 문
+객체의 모든 프로퍼티를 순회하며 열거하려면 `for ... in 문`을 사용한다.
+
+```
+for (변수선언문 in 객체) { ... }
+```
+
+`for ... in 문`은 객체의 프로퍼티 개수만큼 순회하며 `for ... in 문`의 변수 선언문에서 선언한 변수에 프로퍼티 키를 할당한다. <br>
+
+`for ... in 문`은 in 연산자처럼 순회 대상 객체의 프로퍼티뿐만 아니라 상속받은 프로토타입의 프로퍼티까지 열거한다. 하지만 toString과 같은 Object.prototype의 프로퍼티가 열거되지 않는다. 왜냐하면 toString 메서드가 **열거할 수 없도록** 정의되어 있기 때문이다. 다시 말해 Object.prototype.string 프로퍼티의 프로퍼티 어트리뷰트 `[[Enumerable]]`의 값이 false이기 때문이다. 프로퍼티 어트리뷰트 `[[Enumerable]]`은 프로퍼티의 열거 가능 여부를 나타내며 불리언 값을 갖는다. <br>
+
+따라서 `for ... in 문`을 다음과 같이 정확하게 표현해 볼 수 있다. **for ... in 문은 객체의 프로토타입 체인 상에 존재하는 모든 프로토타입의 프로퍼티 중에서 프로퍼티 어트리뷰트 [[Enumerable]]의 값이 true인 프로퍼티를 순회하며 열거한다.** <br>
+
+> `for ... in 문`은 프로퍼티 키가 심벌인 프로퍼티는 열거하지 않는다.
+
+> `for ... in 문`은 프로퍼티를 열거할 때 순서를 보장하지 않는다. 모던 브라우저는 NaN 값이 아닌 (숫자형 문자열) 프로퍼티 키에 대해서는 정렬을 실시한다. <br>
+
+> 배열에는 일반적인 `for 문, for ... of 문, Array.prototype.forEach 메서드`를 사용하는게 좋다. <br>
+배열도 객체이므로 `arr.x = 10;` 처럼 프로퍼티를 가질 수 있는데, `for ... in 문`을 사용했을 때는 이렇게 추가된 프로퍼티도 열거하기 때문이다. <br>
+
+### Object.keys/values/entries 메서드
+`for ... in 문`은 객체 자신의 고유 프로퍼티뿐만 아니라 상속받은 프로퍼티도 열거한다. 때문에 고유 프로퍼티만 열거하고 싶다면 `Object.prototype.hasOwnProperty` 메서드를 사용하여 객체 자신의 프로퍼티인지 확인하는 처리가 필요하다. <br>
+
+그래서 고유 프로퍼티만 열거할 때는 `Object.keys/values/Entries` 메서드를 사용하는 것이 좋다. <br>
+
+> `Object.keys` 메서드는 객체 자신의 열거 가능한 프로퍼티 키를 배열로 반환한다. <br>
+
+> ES8에서 도입된 `Object.values` 메서드는 객체 자신의 열거 가능한 프로퍼티 값을 배열로 반환한다. <br>
+
+> ES8에서 도입된 `Object.entries` 메서드는 객체 자신의 열거 가능한 프로퍼티 키와 값의 쌍의 배열을 배열에 담아 반환한다.
