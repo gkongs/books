@@ -81,7 +81,40 @@ const obj = {
         setTimeout(function () {
             console.log(this); // obj
         }.bind(this), 1000);
+    
+       setTimeout(() => console.log(this) /* obj */, 1000);
     }
-
 };
 ```
+
+### 메서드 호출
+메서드 내부의 this에는 메서드를 호출한 객체, 즉 메서드를 호출할 때 메서드 이름 앞의 마침표(.) 연산자 앞에 기술한 객체가 바인딩된다. <br>
+메서드는 프로퍼티에 바인딩된 함수. 즉, 독립적으로 존재하는 별도의 객체다. 메서드는 프로퍼티가 함수 객체를 가르키고 있을뿐인 것이다. <br>
+
+### 생성자 함수 호출
+생성자 함수 내부의 this에는 생성자 함수가 (미래에) 생성할 인스턴스가 바인딩 된다.
+
+### Function.prototype.apply/call/bind 메서드에 의한 간접 호출
+`apply`, `call`의 본질적인 기능은 함수를 호출하는 것이다. 단 첫 번째 인수로 전달한 특정 객체를 this에 바인딩 시킨다.
+```js
+function getThisBinding() {
+    return this;
+}
+
+const thisArg = { a: 1 };
+
+console.log(getThisBinding()); // window
+console.log(getThisBinding.apply(thisArg)); // {a: 1}
+console.log(getThisBinding.call(thisArg)); // {a: 1}
+```
+둘의 차이점은 두 번째 인수로 함수의 인수를 전달할 수 있는데, `apply`는 [] 형태로, `call`은 comma로 나눈 리스트 형태로 전달하는 것이다.
+```js
+console.log(getThisBinding.apply(thisArg, [1, 2, 3])); // [] array 형태
+console.log(getThisBinding.apply(thisArg, 1, 2, 3));  // , list 형태
+```
+`bind`는 함수를 호출하지 않는다. 다만 첫 번째 인수로 전달한 값으로 this 바인딩이 교체된 함수를 새롭게 생성해 반환한다. <br>
+```js
+console.log(getThisBinding.bind(thisArg)); // getThisBinding
+console.log(getThisBinding.bind(thisArg)()); // {a: 1}
+```
+`bind` 메서드는 앞서 나왔던 메서드의 this와 메서드 내부의 중첩 함수 또는 콜백 함수의 this 불일치 문제를 해결하기 위해 유용하게 사용된다. <br>
