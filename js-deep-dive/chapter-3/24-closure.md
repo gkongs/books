@@ -83,6 +83,75 @@ console.log(increase()); // 2
 
 # 캡슐화와 정보 은닉
 캡슐화는 객체의 상태를 나타내는 프로퍼티와 프로퍼티를 참조하고 조작할 수 있는 동작인 메서드를 하나로 묶는 것을 말한다. 캡슐화는 객체의 특정 프로퍼티나 메서드를 감출 목적으로 사용하기도 하는데 이를 정보 은닉이라 한다. <br>
+정보 은닉은 외부에 공개되지 않도록 감추어 적절치 못한 접근으로부터 객체의 상태가 변경되는 것을 방지해 보호하고, 객체 간의 상호 의존성, 즉 **결합도**를 낮추는 효과가 있다. <br>
+대부분의 객체 지향 프로그래밍 언어는 접근 제한자가 있지만 자바스크립트에는 접근 제한자가 따로 존재하지 않는다. <br>
+자바스크립트 객체의 모든 프로퍼티와 메서드는 기본적으로 외부에 공개되어 있다. 즉, 객체의 모든 프로퍼티와 메서드는 기본적으로 public이라고 할 수 있다. <br>
+
+> 자바스크립트의 접근 제한자 <br>
+자바스크립트에는 본래 접근 제한자가 존재하지 않았지만, ES6에 클래스가 나오고, ES2022에는 #을 통해 private를 선언할 수 있도록 추가되었다.
+또한 typescript를 사용하여 접근 제한자를 사용할 수 있다. <br>
+
+```
+function Person(name, age) {
+    this.name = name // public
+    let _age = age;
+
+    // 인스턴스 메서드
+    this.sayHi = function () {
+        console.log('Hi');
+    }
+}
+const me = new Person('Lee', 20);
+console.log(me.name); // Lee
+console.log(me._age); // undefined
+```
+위 예제에서 name은 공개된 public 변수이기 때문에 외부에서 참조하거나 변경 불가능하지만 _age는 비공개 private 변수이기 때문에 외부에서 참조하거나 변경할 수 없다. <br>
+
+sayHi는 인스턴스 메서드이고 어떤 Person 인스턴스라고 똑같은 동작을 수행한다. 때문에 Person 내부 함수로 두면 코드 중복이 생긴다. 따라서 중복 생성을 방지해보자. <br>
+
+```
+// 프로토타입 메서드
+Person.prototype.sayHi = function() {
+    console.log(`Hi ${_age}!`);
+};
+```
+이렇게 프로토타입 메서드를 사용하면 중복을 막을 수 있다. 하지만 위 예제는 _age를 참조하지 못하는 오류가 발생한다. 따라서 앞서 나왔던 클로저를 사용하여 _age를 참조할 수 있도록 변경해보자 <br>
+
+```
+const Person = (function() {
+    let _age = 0;
+
+    // 생성자 함수
+    function Person(name, age) {
+        this.name = name; // public
+        _age = age;
+    }
+
+    // 프로토타입 메서드
+    Person.prototype.sayHi = function () {
+        console.log(`Hi ${_age}!`);
+    }
+
+    // 생성자 함수를 반환
+    return Person;
+}());
+```
+위 패턴을 사용하면 자바스크립트에서도 정보 은닉이 가능한 것처럼 보인다. <br>
+하지만 위 코드도 문제가 있다. Person 생성자 함수가 여러 개의 인스턴스를 생성할 경우 다음과 같이 _age 변수의 상태가 유지되지 않는다. <br>
+
+```
+const me = new Person('Lee', 20);
+me.sayHi();
+
+const you = new Person('Kim', 30);
+you.sayHi();
+
+me.sayHi(); // _age 값이 30 으로 변경된다.
+```
+이는 Person.prototype.sayHi 메서드가 단 한 번 생성되는 클로저이기 때문에 발생하는 현상이다. <br>
+
+
+
 
 
 
