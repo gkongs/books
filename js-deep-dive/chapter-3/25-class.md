@@ -209,3 +209,10 @@ super 호출 이후 서브클래스의 constructor에 기술되어 있는 인스
 
 6. 인스턴스 반환
 클래스의 모든 처리가 끝나면 완성된 인스턴스가 바인딩된 this가 암묵적으로 반환된다. <br>
+
+### 표준 빌트인 생성자 함수 확장
+extends 키워드 다음에는 클래스뿐만이 아니라 `[[Construct]]` 내부 메서드를 갖는 함수 객체로 평가될 수 있는 모든 표현식을 사용할 수 있다. String, Number, Array 같은 표준 빌트인 객체도 `[[Construct]]` 내부 메서드를 갖는 생성자 함수이므로 extends 키워드를 사용하여 확장할 수 있다. <br>
+```
+class MyArray extends Array {}
+```
+이 때 주의할 것은 Array.prototype의 메서드 중에서 map, filter와 같이 새로운 배열을 반환하는 메서드가 MyArray 클래스의 인스턴스를 반환한다는 것이다. <br>
